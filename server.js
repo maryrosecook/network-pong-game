@@ -116,7 +116,7 @@ var eventHandlers = {
   }
 };
 
-function setEventHandlers(){
+function setEventHandlers(socket){
 	socket.sockets.on('connection', eventHandlers.socketConnected);
 }
 
@@ -163,3 +163,4 @@ function gameLoop(){
 }
 
 var socket = initSocketIO(startServer());
+setEventHandlers(socket);
