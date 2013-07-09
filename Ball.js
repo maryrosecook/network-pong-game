@@ -1,16 +1,16 @@
 function Ball(w, h){
 	var CANVAS_WIDTH = w;
 	var CANVAS_HEIGHT = h;
-	
-	this.r = 7; 
+
+	this.r = 7;
 	this.x = CANVAS_WIDTH/2;
 	this.y = CANVAS_HEIGHT/2;
 	this.vx = 200;
-	this.vy = 200; 
-	this.directionX = (Math.random() > 0.5? 1: -1); 
-	this.directionY = (Math.random() > 0.5? 1: -1); 
+	this.vy = 200;
+	this.directionX = (Math.random() > 0.5? 1: -1);
+	this.directionY = (Math.random() > 0.5? 1: -1);
 
-	this.update = function(mod){ 
+	this.update = function(mod){
 		if(this.x - this.r <= 0 || this.x + this.r >= CANVAS_WIDTH)
 			this.directionX *= -1;
 
