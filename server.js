@@ -20,11 +20,11 @@
 
 	var server = http.createServer(function(req, res){
 		var pathname = url.parse(req.url).pathname;
-		if(pathname == '/'){
+		if (pathname == '/') {
       serveStaticFile(__dirname + '/index.html', 'text/html', res);
-		}else if(pathname == '/game.js'){
+		} else if (pathname == '/game.js') {
       serveStaticFile(__dirname + '/game.js', 'text/javascript', res);
-		}else{
+		} else {
 			res.writeHead(400);
 			res.end('404 Not Found');
 		}
