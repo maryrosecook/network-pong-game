@@ -1,4 +1,6 @@
 ;(function(){
+  var PORT = 8000;
+
 	var http = require('http'),
 			fs = require('fs'),
 			io = require('socket.io'),
@@ -26,7 +28,9 @@
 		}
 	});
 
-	var app = server.listen(8000); 
+  var app = server.listen(PORT);
+  console.log("Server started on port", PORT);
+
 	var players, canvasWidth, canvasHeight, ball, loop, time;
 	/*
 	players = [{id:client.id, x:.., y:..}, ...];
