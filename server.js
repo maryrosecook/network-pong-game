@@ -1,5 +1,3 @@
-var PORT = 8000;
-
 var http = require('http'),
     fs = require('fs'),
     io = require('socket.io'),
@@ -17,27 +15,30 @@ var serveStaticFile = function(filename, type, res) {
   });
 };
 
-var server = http.createServer(function(req, res){
-	var pathname = url.parse(req.url).pathname;
-	if (pathname == '/') {
-    serveStaticFile(__dirname + '/index.html', 'text/html', res);
-	} else if (pathname == '/game.js') {
-    serveStaticFile(__dirname + '/game.js', 'text/javascript', res);
-	} else {
-		res.writeHead(400);
-		res.end('404 Not Found');
-	}
-});
+var startServer = function() {
+  var PORT = 8000;
+  var app = http.createServer(function(req, res){
+	  var pathname = url.parse(req.url).pathname;
+	  if (pathname == '/') {
+      serveStaticFile(__dirname + '/index.html', 'text/html', res);
+	  } else if (pathname == '/game.js') {
+      serveStaticFile(__dirname + '/game.js', 'text/javascript', res);
+	  } else {
+		  res.writeHead(400);
+		  res.end('404 Not Found');
+	  }
+  }).listen(PORT);
 
-var app = server.listen(PORT);
-console.log("Server started on port", PORT);
+  console.log("Server started on port", PORT);
+  return app;
+};
 
 var players, canvasWidth, canvasHeight, ball, loop, time;
 /*
 	players = [{id:client.id, x:.., y:..}, ...];
 */
 
-function init(){
+function init(app){
 	players = [];
 	socket = io.listen(app);
 	socket.configure(function(){
@@ -162,4 +163,5 @@ function gameLoop(){
 	time = Date.now();
 }
 
-init();
+var app = startServer();
+init(app);
