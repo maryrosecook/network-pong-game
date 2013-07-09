@@ -11,17 +11,19 @@
 	
 	var socket;
 
-	var gamePage = fs.readFileSync(__dirname + '/index.html');
-	var gameJs = fs.readFileSync(__dirname + '/game.js');
+  var serveStaticFile = function(filename, type, res) {
+    fs.readFile(filename, 'utf8', function (err, data) {
+      res.writeHead(200, { 'Content-Type': type });
+      res.end(data);
+    });
+  };
 
 	var server = http.createServer(function(req, res){
 		var pathname = url.parse(req.url).pathname;
 		if(pathname == '/'){
-			res.writeHead(200, {'Content-type': 'text/html'});
-			res.end(gamePage);
+      serveStaticFile(__dirname + '/index.html', 'text/html', res);
 		}else if(pathname == '/game.js'){
-			res.writeHead(200, {'Content-type': 'text/javascript'});
-			res.end(gameJs);
+      serveStaticFile(__dirname + '/game.js', 'text/javascript', res);
 		}else{
 			res.writeHead(400);
 			res.end('404 Not Found');
