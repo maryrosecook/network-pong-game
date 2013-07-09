@@ -38,15 +38,14 @@ var players, canvasWidth, canvasHeight, ball, loop, time;
 	players = [{id:client.id, x:.., y:..}, ...];
 */
 
-function init(app){
-	players = [];
-	socket = io.listen(app);
+function initSocketIO(app){
+	var socket = io.listen(app);
 	socket.configure(function(){
 		socket.set('transports', ['websocket']);
 		socket.set('log level', 2);
 	});
 
-	setEventHandlers();
+  return socket;
 }
 
 var eventHandlers = {
