@@ -6,6 +6,6 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "socket.io": ".9"
+    "socket.io": "0.9"
   }
 }
