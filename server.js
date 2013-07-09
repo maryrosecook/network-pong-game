@@ -5,10 +5,10 @@
 			fs = require('fs'),
 			io = require('socket.io'),
 			url = require('url');
-	
+
 	var Player = require('./Players'),
 			Ball = require('./Ball');
-	
+
 	var socket;
 
   var serveStaticFile = function(filename, type, res) {
@@ -37,7 +37,7 @@
 	/*
 	players = [{id:client.id, x:.., y:..}, ...];
 	*/
-	
+
 	function init(){
 		players = [];
 		socket = io.listen(app);
@@ -50,7 +50,7 @@
 	}
 
 	function setEventHandlers(){
-		socket.sockets.on('connection', socketConnected);	
+		socket.sockets.on('connection', socketConnected);
 	}
 
 	function socketConnected(client){
@@ -65,7 +65,7 @@
 		players.splice(findIndexById(playerId), 1);
 		//broadcast to other players that client disconnected
 		if(players.length > 1)
-			this.broadcast.emit('player disconnected', {id: playerId});	
+			this.broadcast.emit('player disconnected', {id: playerId});
 	}
 
 	function newPlayer(data){
@@ -77,10 +77,10 @@
 
 				ball = new Ball(canvasWidth, canvasHeight);
 			}
-			
+
 			var playerId = this.id;
 			players.push({id: playerId});
-	
+
 			var playerIndex = findIndexById(playerId);
 			players[playerIndex].x = data.x;
 			players[playerIndex].y = (players.length === 1? canvasHeight - data.height - 5: 5);
@@ -90,7 +90,7 @@
 
 			var nth = (players.length > 1? 2: 1);
 			players[playerIndex].nth = nth;
-		
+
 			//broadcast to other players about new player
 			if(players.length > 1){
 				this.broadcast.emit('new player', {id: playerIndex, id2: playerId, x: data.x});
@@ -101,10 +101,10 @@
 				if(players[i].id !== playerId)
 					this.emit('new player', {id: i, id2: players[i].id, x: players[i].x, nth: 1});
 			}
-			
+
 			this.emit('assign player', {nth: nth});
 			this.emit('create ball', {x: ball.x, y: ball.y});
-			
+
 			if(players.length > 1){
 				time = Date.now();
 				loop = setInterval(gameLoop, 50);
@@ -122,17 +122,17 @@
 	function findIndexById(playerId){
 		for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
 			if(players[i].id === playerId)
-				return i;	
+				return i;
 		}
 	}
 
 	function gameLoop(){
 		var gameOver = ball.update((Date.now() - time)/1000);
-		
+
 		for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
 			var nth = parseInt(players[i].nth);
 			var playerYToCompare = (nth === 1? players[i].y: players[i].y + players[i].height);
-			
+
 			if(nth === 1){
 				var yCompared = ball.y + ball.r >= playerYToCompare;
 			}else{

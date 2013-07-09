@@ -1,5 +1,5 @@
 ;(function(){
-	
+
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
 	var W = 330,
@@ -80,13 +80,13 @@
 		socket.on('game over', onGameOver);
 		socket.on('update score', onUpdateScore);
 	}
-	
+
 	function onNewPlayer(data){
 		otherPlayer = new Paddle();
 		otherPlayer.id = data.id;
 		otherPlayer.x = data.x;
 		otherPlayer.y = data.nth === 1? H - otherPlayer.h - 5: 5;
-	
+
 		otherPlayer.nth = data.nth;
 		otherPlayer.id2 = data.id2;
 	}
@@ -127,7 +127,7 @@
 		}
 		console.log(player.score, otherPlayer.score);
 	}
-	
+
 
 	window.addEventListener('keydown', function(e){
 		pressedKey[e.keyCode] = true;
@@ -167,7 +167,7 @@
 		if(otherPlayer)
 			otherPlayer.draw();
 		if(ball)
-			ball.draw();	
+			ball.draw();
 	}
 
 	function updateAll(mod){
@@ -182,7 +182,7 @@
 
 		game = setTimeout(gameLoop, 50);
 	}
-	
+
 	init();
 	gameLoop();
 }());
