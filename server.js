@@ -162,5 +162,4 @@ function gameLoop(){
 	time = Date.now();
 }
 
-var app = startServer();
-init(app);
+var socket = initSocketIO(startServer());
