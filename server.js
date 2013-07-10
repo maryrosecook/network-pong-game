@@ -163,8 +163,8 @@ function initSocketIO(app){
   return socket;
 }
 
-var eventHandlers = {
-  socketConnected: function(client){
+function setEventHandlers(socket){
+	socket.sockets.on('connection', function(client) {
 	  client.on('disconnect', function() {
       game.removePlayer(this);
     });
@@ -176,11 +176,7 @@ var eventHandlers = {
 	  client.on('player moved', function(data) {
       game.movePlayer(this, data);
     });
-  }
-};
-
-function setEventHandlers(socket){
-	socket.sockets.on('connection', eventHandlers.socketConnected);
+  });
 }
 
 function findIndexById(playerId){
