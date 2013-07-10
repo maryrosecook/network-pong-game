@@ -23,6 +23,11 @@ function Ball(w, h){
 
 		return false;
 	}
+
+  // return true when ball has betmeen floor and ceiling of game world
+  this.isInPlayArea = function() {
+    return this.y - this.r > 0 && this.y + this.r < CANVAS_HEIGHT;
+  };
 }
 
 module.exports = Ball;
