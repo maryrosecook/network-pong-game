@@ -85,7 +85,7 @@ var startServer = function() {
   return app;
 };
 
-var players = [], canvasWidth, canvasHeight, ball;
+var game = new Game();
 /*
 	players = [{id:client.id, x:.., y:..}, ...];
 */
