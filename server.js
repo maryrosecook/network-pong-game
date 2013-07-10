@@ -63,9 +63,46 @@ Game.prototype = {
 		  client.emit('create ball', {x: this.ball.x, y: this.ball.y});
 
 		  if(this.players.length > 1){
-        startGame();
+        this.start();
 		  }
 	  }
+  },
+
+  start: function() {
+    var time = Date.now();
+    var self = this;
+	  var loop = setInterval(function() {
+	    self.ball.update((Date.now() - time)/1000);
+
+	    for(var i = 0, maxPlayers = self.players.length; i < maxPlayers; i++){
+		    var nth = parseInt(self.players[i].nth);
+		    var playerYToCompare = (nth === 1? self.players[i].y: self.players[i].y + self.players[i].height);
+
+		    if(nth === 1){
+			    var yCompared = self.ball.y + self.ball.r >= playerYToCompare;
+		    }else{
+			    var yCompared = self.ball.y - self.ball.r <= playerYToCompare;
+		    }
+
+		    if ((self.ball.x + self.ball.r >= self.players[i].x &&
+			       self.ball.x - self.ball.r <= self.players[i].x + self.players[i].width) &&
+				    yCompared) {
+			    self.players[i].score++;
+			    self.ball.directionY *= -1;
+			    socket.sockets.emit('update score', {nth: nth, score: self.players[i].score});
+		    }
+	    }
+
+	    socket.sockets.emit('move ball', {x: self.ball.x, y: self.ball.y});
+
+	    if(!self.ball.isInPlayArea()){
+		    console.log('Game Over');
+		    clearInterval(loop);
+		    socket.sockets.emit('game over', {msg: 'Game Over'});
+	    }
+
+	    time = Date.now();
+    }, 50);
   }
 };
 
@@ -145,42 +182,6 @@ function findIndexById(playerId){
 			return i;
 	}
 }
-
-function startGame() {
-  var time = Date.now();
-	var loop = setInterval(function() {
-	  game.ball.update((Date.now() - time)/1000);
-
-	  for(var i = 0, maxPlayers = game.players.length; i < maxPlayers; i++){
-		  var nth = parseInt(game.players[i].nth);
-		  var playerYToCompare = (nth === 1? game.players[i].y: game.players[i].y + game.players[i].height);
-
-		  if(nth === 1){
-			  var yCompared = game.ball.y + game.ball.r >= playerYToCompare;
-		  }else{
-			  var yCompared = game.ball.y - game.ball.r <= playerYToCompare;
-		  }
-
-		  if ((game.ball.x + game.ball.r >= game.players[i].x &&
-			     game.ball.x - game.ball.r <= game.players[i].x + game.players[i].width) &&
-				  yCompared) {
-			  game.players[i].score++;
-			  game.ball.directionY *= -1;
-			  socket.sockets.emit('update score', {nth: nth, score: game.players[i].score});
-		  }
-	  }
-
-	  socket.sockets.emit('move ball', {x: game.ball.x, y: game.ball.y});
-
-	  if(!game.ball.isInPlayArea()){
-		  console.log('Game Over');
-		  clearInterval(loop);
-		  socket.sockets.emit('game over', {msg: 'Game Over'});
-	  }
-
-	  time = Date.now();
-  }, 50);
-};
 
 var socket = initSocketIO(startServer());
 setEventHandlers(socket);
