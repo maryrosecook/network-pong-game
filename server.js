@@ -54,7 +54,7 @@ Game.prototype = {
 		  }
 
 		  //send new player data about existing players
-		  for(var i = 0, maxPlayers = this.players.length; i < maxPlayers; i++){
+		  for(var i = 0; i < this.players.length; i++){
 			  if(this.players[i].id !== playerId)
 				  client.emit('new player', {id: i, id2: this.players[i].id, x: this.players[i].x, nth: 1});
 		  }
