@@ -2,10 +2,8 @@
 
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
-	var W = 330,
-			H = 500;
-	canvas.width = W;
-	canvas.height = H;
+	canvas.width = 330;
+	canvas.height = 500;
 	canvas.style.display = 'block';
 	canvas.style.margin = 'auto';
 	var player, otherPlayer, ball, game;
@@ -23,7 +21,7 @@
 		this.move = function(mod){
 			if(pressedKey[37] && this.x > 0){
 				this.x -= this.vx * mod;
-			}else if(pressedKey[39] && this.x + this.w < W){
+			}else if(pressedKey[39] && this.x + this.w < canvas.width){
 				this.x += this.vx * mod;
 			}
 		}
@@ -63,7 +61,7 @@
 		player = new Paddle();
 
 		//emit player has joined
-		socket.emit('new player', {x: player.x, canvasWidth: W, canvasHeight: H, width: player.w, height: player.h});
+		socket.emit('new player', {x: player.x, canvasWidth: canvas.width, canvasHeight: canvas.height, width: player.w, height: player.h});
 
 		setEventHandlers();
 
@@ -85,7 +83,7 @@
 		otherPlayer = new Paddle();
 		otherPlayer.id = data.id;
 		otherPlayer.x = data.x;
-		otherPlayer.y = data.nth === 1? H - otherPlayer.h - 5: 5;
+		otherPlayer.y = data.nth === 1? canvas.height - otherPlayer.h - 5: 5;
 
 		otherPlayer.nth = data.nth;
 		otherPlayer.id2 = data.id2;
@@ -93,7 +91,7 @@
 
 	function onPlayerAssign(data){
 		player.nth = data.nth;
-		player.y = (data.nth === 1)? H - player.h - 5: 5;
+		player.y = (data.nth === 1)? canvas.height - player.h - 5: 5;
 	}
 
 	function onCreateBall(data){
@@ -141,7 +139,7 @@
 	//Rendering functions
 	function drawCanvas(){
 		ctx.fillStyle = '#333';
-		ctx.fillRect(0, 0, W, H);
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
 
 	function drawGameOver(){
@@ -151,12 +149,12 @@
 		var winner = ((totalScore % 2) === 0)?2:1;
 
 		ctx.fillStyle = '#000';
-		ctx.fillRect(0, 0, W, H);
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		ctx.fillStyle = '#fff';
 		ctx.font = '30px Verdana';
-		ctx.fillText('Game Over', (W - 100)/2, H/2, 100);
+		ctx.fillText('Game Over', (canvas.width - 100)/2, canvas.height/2, 100);
 		ctx.font = '20px Verdana';
-		ctx.fillText('Player ' + winner + ' Won!', (W - 60)/2, (H + 50)/2, 60);
+		ctx.fillText('Player ' + winner + ' Won!', (canvas.width - 60)/2, (canvas.height + 50)/2, 60);
 		/*ctx.fillText('Player 1: ' + player1.score + ' Pts.', (W - 60)/2, (H + 50)/2, 60);
 		ctx.fillText('Player 2: ' + player2.score + ' Pts.', (W - 60)/2, (H + 100)/2, 60);*/
 	}
