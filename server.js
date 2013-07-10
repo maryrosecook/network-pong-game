@@ -154,7 +154,7 @@ function startGame() {
 
 	  socket.sockets.emit('move ball', {x: ball.x, y: ball.y});
 
-	  if(gameOver){
+	  if(!ball.isInPlayArea()){
 		  console.log('Game Over');
 		  clearInterval(loop);
 		  socket.sockets.emit('game over', {msg: 'Game Over'});
