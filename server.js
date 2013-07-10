@@ -26,6 +26,15 @@ Game.prototype = {
         this.ball = new Ball(this.height, this.height);
 		  }
 
+      // this could be cleaned up
+      // just make a player obj, assign to player, push onto this.players,
+      // then setting x, y, width etc can be done on player
+
+      // id2 seems redundant.  I think it can be deleted.
+
+      // why do you broadcast/emit player ids that are their array indices,
+      // rather than just using their client.id?
+
 		  var playerId = client.id;
 		  this.players.push({id: playerId});
 
