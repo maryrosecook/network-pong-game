@@ -8,6 +8,58 @@ var Player = require('./Players'),
 
 var socket;
 
+var Game = function() {
+  this.players = [];
+};
+
+Game.prototype = {
+  setPlayAreaDimensions: function(width, height) {
+    this.width = width;
+    this.height = height;
+  },
+
+  addPlayer: function(client, data) {
+	  if(this.players.length <= 2) {
+		  //only set the canvasWidth and canvasHeight with the first player
+		  if(!this.players.length){
+        this.setPlayAreaDimensions(data.canvasWidth, data.canvasHeight);
+        this.ball = new Ball(this.height, this.height);
+		  }
+
+		  var playerId = client.id;
+		  this.players.push({id: playerId});
+
+		  var playerIndex = findIndexById(playerId);
+		  this.players[playerIndex].x = data.x;
+		  this.players[playerIndex].y = (this.players.length === 1? data.canvasHeight - data.height - 5: 5);
+		  this.players[playerIndex].width = data.width;
+		  this.players[playerIndex].height = data.height;
+		  this.players[playerIndex].score = 0;
+
+		  var nth = (this.players.length > 1? 2: 1);
+		  this.players[playerIndex].nth = nth;
+
+		  //broadcast to other players about new player
+		  if(this.players.length > 1){
+			  client.broadcast.emit('new player', {id: playerIndex, id2: playerId, x: data.x});
+		  }
+
+		  //send new player data about existing players
+		  for(var i = 0, maxPlayers = this.players.length; i < maxPlayers; i++){
+			  if(this.players[i].id !== playerId)
+				  client.emit('new player', {id: i, id2: this.players[i].id, x: this.players[i].x, nth: 1});
+		  }
+
+		  client.emit('assign player', {nth: nth});
+		  client.emit('create ball', {x: this.ball.x, y: this.ball.y});
+
+		  if(this.players.length > 1){
+        startGame();
+		  }
+	  }
+  }
+};
+
 var serveStaticFile = function(filename, type, res) {
   fs.readFile(filename, 'utf8', function (err, data) {
     res.writeHead(200, { 'Content-Type': type });
