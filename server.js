@@ -141,11 +141,9 @@ function startGame() {
 			  var yCompared = ball.y - ball.r <= playerYToCompare;
 		  }
 
-		  if(
-			  (ball.x + ball.r >= players[i].x &&
-			   ball.x - ball.r <= players[i].x + players[i].width) &&
-				  yCompared
-		  ){
+		  if ((ball.x + ball.r >= players[i].x &&
+			     ball.x - ball.r <= players[i].x + players[i].width) &&
+				  yCompared) {
 			  players[i].score++;
 			  ball.directionY *= -1;
 			  socket.sockets.emit('update score', {nth: nth, score: players[i].score});
