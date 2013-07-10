@@ -102,8 +102,7 @@ var eventHandlers = {
 		  this.emit('create ball', {x: ball.x, y: ball.y});
 
 		  if(players.length > 1){
-			  time = Date.now();
-			  loop = setInterval(gameLoop, 50);
+        startGame();
 		  }
 	  }
   },
