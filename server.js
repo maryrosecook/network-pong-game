@@ -76,7 +76,9 @@ Game.prototype = {
 
 	    for(var i = 0, maxPlayers = self.players.length; i < maxPlayers; i++){
 		    var nth = parseInt(self.players[i].nth);
-		    var playerYToCompare = nth === 1? self.players[i].y: self.players[i].y + self.players[i].height;
+		    var playerYToCompare = nth === 1 ?
+          self.players[i].y :
+          self.players[i].y + self.players[i].height;
 
 		    if(nth === 1){
 			    var yCompared = self.ball.y + self.ball.r >= playerYToCompare;
