@@ -110,9 +110,9 @@ var eventHandlers = {
   clientDisconnected: function(){
 	  //remove from players array
 	  var playerId = this.id;
-	  players.splice(findIndexById(playerId), 1);
+	  game.players.splice(findIndexById(playerId), 1);
 	  //broadcast to other players that client disconnected
-	  if(players.length > 1)
+	  if(game.players.length > 1)
 		  this.broadcast.emit('player disconnected', {id: playerId});
   },
 
@@ -162,7 +162,7 @@ var eventHandlers = {
   playerMoved: function(data){
 	  var playerId = this.id;
 	  var playerIndex = findIndexById(playerId);
-	  players[playerIndex].x = data.x;
+	  game.players[playerIndex].x = data.x;
 	  this.broadcast.emit('player moved', {x: data.x});
   }
 };
@@ -172,8 +172,8 @@ function setEventHandlers(socket){
 }
 
 function findIndexById(playerId){
-	for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
-		if(players[i].id === playerId)
+	for(var i = 0, maxPlayers = game.players.length; i < maxPlayers; i++){
+		if(game.players[i].id === playerId)
 			return i;
 	}
 }
@@ -181,30 +181,30 @@ function findIndexById(playerId){
 function startGame() {
   var time = Date.now();
 	var loop = setInterval(function() {
-	  ball.update((Date.now() - time)/1000);
+	  game.ball.update((Date.now() - time)/1000);
 
-	  for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
-		  var nth = parseInt(players[i].nth);
-		  var playerYToCompare = (nth === 1? players[i].y: players[i].y + players[i].height);
+	  for(var i = 0, maxPlayers = game.players.length; i < maxPlayers; i++){
+		  var nth = parseInt(game.players[i].nth);
+		  var playerYToCompare = (nth === 1? game.players[i].y: game.players[i].y + game.players[i].height);
 
 		  if(nth === 1){
-			  var yCompared = ball.y + ball.r >= playerYToCompare;
+			  var yCompared = game.ball.y + game.ball.r >= playerYToCompare;
 		  }else{
-			  var yCompared = ball.y - ball.r <= playerYToCompare;
+			  var yCompared = game.ball.y - game.ball.r <= playerYToCompare;
 		  }
 
-		  if ((ball.x + ball.r >= players[i].x &&
-			     ball.x - ball.r <= players[i].x + players[i].width) &&
+		  if ((game.ball.x + game.ball.r >= game.players[i].x &&
+			     game.ball.x - game.ball.r <= game.players[i].x + game.players[i].width) &&
 				  yCompared) {
-			  players[i].score++;
-			  ball.directionY *= -1;
-			  socket.sockets.emit('update score', {nth: nth, score: players[i].score});
+			  game.players[i].score++;
+			  game.ball.directionY *= -1;
+			  socket.sockets.emit('update score', {nth: nth, score: game.players[i].score});
 		  }
 	  }
 
-	  socket.sockets.emit('move ball', {x: ball.x, y: ball.y});
+	  socket.sockets.emit('move ball', {x: game.ball.x, y: game.ball.y});
 
-	  if(!ball.isInPlayArea()){
+	  if(!game.ball.isInPlayArea()){
 		  console.log('Game Over');
 		  clearInterval(loop);
 		  socket.sockets.emit('game over', {msg: 'Game Over'});
