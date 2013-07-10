@@ -16,12 +16,6 @@ function Ball(w, h){
 
 		this.x += (this.vx * this.directionX) * mod;
 		this.y += (this.vy * this.directionY) * mod;
-
-		//only return false when ball has passed the floor or ceiling of the game world
-		if(this.y - this.r <= 0 || this.y + this.r >= CANVAS_HEIGHT)
-			return true;
-
-		return false;
 	}
 
   // return true when ball has betmeen floor and ceiling of game world
