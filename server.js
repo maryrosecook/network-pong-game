@@ -129,7 +129,7 @@ function findIndexById(playerId){
 function startGame() {
   var time = Date.now();
 	var loop = setInterval(function() {
-	  var gameOver = ball.update((Date.now() - time)/1000);
+	  ball.update((Date.now() - time)/1000);
 
 	  for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
 		  var nth = parseInt(players[i].nth);
