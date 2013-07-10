@@ -6,8 +6,6 @@ var http = require('http'),
 var Player = require('./Players'),
     Ball = require('./Ball');
 
-var socket;
-
 var Game = function() {
   this.players = [];
 };
@@ -150,7 +148,6 @@ var startServer = function() {
   return app;
 };
 
-var game = new Game();
 /*
 	players = [{id:client.id, x:.., y:..}, ...];
 */
@@ -189,4 +186,5 @@ function findIndexById(playerId){
 }
 
 var socket = initSocketIO(startServer());
+var game = new Game();
 setEventHandlers(socket);
