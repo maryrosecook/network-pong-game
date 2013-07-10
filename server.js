@@ -127,40 +127,43 @@ function findIndexById(playerId){
 	}
 }
 
-function gameLoop(){
-	var gameOver = ball.update((Date.now() - time)/1000);
+function startGame() {
+  var time = Date.now();
+	var loop = setInterval(function() {
+	  var gameOver = ball.update((Date.now() - time)/1000);
 
-	for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
-		var nth = parseInt(players[i].nth);
-		var playerYToCompare = (nth === 1? players[i].y: players[i].y + players[i].height);
+	  for(var i = 0, maxPlayers = players.length; i < maxPlayers; i++){
+		  var nth = parseInt(players[i].nth);
+		  var playerYToCompare = (nth === 1? players[i].y: players[i].y + players[i].height);
 
-		if(nth === 1){
-			var yCompared = ball.y + ball.r >= playerYToCompare;
-		}else{
-			var yCompared = ball.y - ball.r <= playerYToCompare;
-		}
+		  if(nth === 1){
+			  var yCompared = ball.y + ball.r >= playerYToCompare;
+		  }else{
+			  var yCompared = ball.y - ball.r <= playerYToCompare;
+		  }
 
-		if(
-			(ball.x + ball.r >= players[i].x &&
-			 ball.x - ball.r <= players[i].x + players[i].width) &&
-				yCompared
-		){
-			players[i].score++;
-			ball.directionY *= -1;
-			socket.sockets.emit('update score', {nth: nth, score: players[i].score});
-		}
-	}
+		  if(
+			  (ball.x + ball.r >= players[i].x &&
+			   ball.x - ball.r <= players[i].x + players[i].width) &&
+				  yCompared
+		  ){
+			  players[i].score++;
+			  ball.directionY *= -1;
+			  socket.sockets.emit('update score', {nth: nth, score: players[i].score});
+		  }
+	  }
 
-	socket.sockets.emit('move ball', {x: ball.x, y: ball.y});
+	  socket.sockets.emit('move ball', {x: ball.x, y: ball.y});
 
-	if(gameOver){
-		console.log('Game Over');
-		clearInterval(loop);
-		socket.sockets.emit('game over', {msg: 'Game Over'});
-	}
+	  if(gameOver){
+		  console.log('Game Over');
+		  clearInterval(loop);
+		  socket.sockets.emit('game over', {msg: 'Game Over'});
+	  }
 
-	time = Date.now();
-}
+	  time = Date.now();
+  }, 50);
+};
 
 var socket = initSocketIO(startServer());
 setEventHandlers(socket);
