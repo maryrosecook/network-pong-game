@@ -23,7 +23,7 @@ Game.prototype = {
 		  //only set the canvasWidth and canvasHeight with the first player
 		  if(!this.players.length){
         this.setPlayAreaDimensions(data.canvasWidth, data.canvasHeight);
-        this.ball = new Ball(this.height, this.height);
+        this.ball = new Ball(this.width, this.height);
 		  }
 
       // this could be cleaned up
