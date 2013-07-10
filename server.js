@@ -110,6 +110,16 @@ Game.prototype = {
 	  var playerIndex = findIndexById(playerId);
 	  this.players[playerIndex].x = data.x;
 	  client.broadcast.emit('player moved', {x: data.x});
+  },
+
+  removePlayer: function(client) {
+	  //remove from players array
+	  var playerId = client.id;
+	  this.players.splice(findIndexById(playerId), 1);
+	  //broadcast to other players that client disconnected
+	  if(this.players.length > 1) {
+		  client.broadcast.emit('player disconnected', {id: playerId});
+    }
   }
 };
 
@@ -155,22 +165,17 @@ function initSocketIO(app){
 
 var eventHandlers = {
   socketConnected: function(client){
-	  client.on('disconnect', eventHandlers.clientDisconnected);
+	  client.on('disconnect', function() {
+      game.removePlayer(this);
+    });
+
 	  client.on('new player', function(data) {
       game.addPlayer(this, data);
     });
+
 	  client.on('player moved', function(data) {
       game.movePlayer(this, data);
     });
-  },
-
-  clientDisconnected: function(){
-	  //remove from players array
-	  var playerId = this.id;
-	  game.players.splice(findIndexById(playerId), 1);
-	  //broadcast to other players that client disconnected
-	  if(game.players.length > 1)
-		  this.broadcast.emit('player disconnected', {id: playerId});
   }
 };
 
