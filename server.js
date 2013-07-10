@@ -19,7 +19,7 @@ Game.prototype = {
   addPlayer: function(client, data) {
 	  if(this.players.length <= 2) {
 		  //only set the canvasWidth and canvasHeight with the first player
-		  if(!this.players.length){
+		  if(this.players.length === 0){
         this.setPlayAreaDimensions(data.canvasWidth, data.canvasHeight);
         this.ball = new Ball(this.width, this.height);
 		  }
