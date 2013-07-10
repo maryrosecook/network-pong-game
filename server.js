@@ -103,6 +103,13 @@ Game.prototype = {
 
 	    time = Date.now();
     }, 50);
+  },
+
+  movePlayer: function(client, data) {
+	  var playerId = client.id;
+	  var playerIndex = findIndexById(playerId);
+	  this.players[playerIndex].x = data.x;
+	  client.broadcast.emit('player moved', {x: data.x});
   }
 };
 
@@ -152,7 +159,9 @@ var eventHandlers = {
 	  client.on('new player', function(data) {
       game.addPlayer(this, data);
     });
-	  client.on('player moved', eventHandlers.playerMoved);
+	  client.on('player moved', function(data) {
+      game.movePlayer(this, data);
+    });
   },
 
   clientDisconnected: function(){
@@ -162,13 +171,6 @@ var eventHandlers = {
 	  //broadcast to other players that client disconnected
 	  if(game.players.length > 1)
 		  this.broadcast.emit('player disconnected', {id: playerId});
-  },
-
-  playerMoved: function(data){
-	  var playerId = this.id;
-	  var playerIndex = findIndexById(playerId);
-	  game.players[playerIndex].x = data.x;
-	  this.broadcast.emit('player moved', {x: data.x});
   }
 };
 
